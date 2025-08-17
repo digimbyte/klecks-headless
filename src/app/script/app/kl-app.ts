@@ -1,6 +1,7 @@
 import { KL } from '../klecks/kl';
 import { BB } from '../bb/bb';
 import { showIframeModal } from '../klecks/ui/modals/show-iframe-modal';
+import { showHelpModal } from '../klecks/ui/modals/show-help-modal';
 import { EmbedToolspaceTopRow } from '../embed/embed-toolspace-top-row';
 import {
     IGradient,
@@ -1027,7 +1028,7 @@ export class KlApp {
         if (this.embed) {
             toolspaceTopRow = new EmbedToolspaceTopRow({
                 onHelp: () => {
-                    showIframeModal(this.embed!.url + '/help.html', !!this.embed);
+                    showHelpModal();
                 },
                 onSubmit: () => {
                     applyUncommitted();
@@ -1117,7 +1118,7 @@ export class KlApp {
                     shareImage();
                 },
                 onHelp: () => {
-                    showIframeModal('./help/', !!this.embed);
+                    showHelpModal();
                 },
             });
         }

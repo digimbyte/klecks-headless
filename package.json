@@ -10,9 +10,11 @@
   ],
   "scripts": {
     "start": "parcel serve src/index.html --no-cache",
+    "start:dev": "parcel serve src/dev-with-ui.ts --no-cache",
     "build": "parcel build src/index.html",
     "build:embed": "parcel build src/embed.ts",
-    "build:help": "parcel build src/help.html --public-url .",
+    "build:headless": "parcel build src/headless.ts --no-source-maps",
+    "build:dev": "parcel build src/dev-with-ui.ts --no-source-maps",
     "lang:add": "node src/languages/generate.js add",
     "lang:sync": "node src/languages/generate.js sync",
     "lang:build": "node src/languages/generate.js build"

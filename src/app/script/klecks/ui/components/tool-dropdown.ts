@@ -42,19 +42,19 @@ export class ToolDropdown {
 
     private updateButton() {
         this.activeButton.title = this.titleArr[this.currentActiveIndex];
-        this.activeButtonIm.style.backgroundImage =
-            "url('" + this.imArr[this.currentActiveIndex] + "')";
+        this.activeButtonIm.textContent = this.imArr[this.currentActiveIndex];
     }
 
     // ----------------------------------- public -----------------------------------
     constructor(p: { onChange: (activeStr: TToolType) => void }) {
+        // Using emojis for universal icons
         this.imArr = [
-            toolPaintImg,
-            toolFillImg,
-            toolGradientImg,
-            toolTextImg,
-            toolShapeImg,
-            toolSelectImg,
+            '🖌️',  // brush
+            '🪣',  // paint bucket
+            '🌈',  // gradient
+            '🆎',  // text
+            '⬜', // shape
+            '🔲',  // select
         ];
         this.titleArr = [
             `${LANG('tool-brush')} [B]`,
@@ -168,9 +168,10 @@ export class ToolDropdown {
             parent: this.activeButton,
             className: 'dark-invert',
             css: {
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                backgroundSize: 'contain',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
                 width: 'calc(100% - 7px)',
                 height: '100%',
                 pointerEvents: 'none',
@@ -266,11 +267,12 @@ export class ToolDropdown {
             BB.el({
                 parent: wrapper,
                 className: 'dark-invert',
+                textContent: p.image,
                 css: {
-                    backgroundImage: "url('" + p.image + "')",
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    backgroundSize: 'contain',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
                     height: '100%',
                     pointerEvents: 'none',
                     opacity: '0.75',

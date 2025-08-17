@@ -1,216 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Klecks Help</title>
-    <style>
-        :root {
-            --active-highlight-color: #87abf1;
-            --body-bg-color: #ddd;
-            --klecks-color: #2a64f8;
-            --line-color: #e1e1e1;
-        }
+/**
+ * Help content - inlined from help.html to eliminate separate file dependency
+ * This content is used by the help modal in the main application
+ */
 
-        body, html {
-            text-size-adjust: none;
-            -webkit-text-size-adjust: none;
-            -moz-text-size-adjust: none;
-            -ms-text-size-adjust: none;
-        }
-
-        body {
-            background: #fff;
-            margin: 20px;
-            color: #000;
-            font-family: Arial, sans-serif;
-            font-size: 17px;
-            line-height: 22px;
-        }
-
-        div, a, span, p {
-            box-sizing: border-box;
-        }
-
-        a:link, a:not([href]) {
-            color: var(--klecks-color);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        a:visited {
-            color: #536184;
-            text-decoration: underline;
-        }
-
-        a:hover, a:not([href]):hover {
-            color: #000;
-            text-decoration: underline;
-        }
-
-        .content-content {
-            flex: 1 auto;
-        }
-
-        li {
-            margin-left: 0;
-        }
-
-        ul {
-            margin-top: 0;
-            padding-top: 0;
-        }
-
-
-        /* --- help ---*/
-        .key {
-            background: #eee;
-            padding: 0 4px;
-            border-radius: 3px;
-            box-shadow: 1px 1px #ccc;
-            color: rgb(55, 55, 55);
-            min-width: 13px;
-            display: inline-block;
-            text-align: center;
-            font-size: 0.9em;
-            line-height: 1.6em;
-            font-family: monospace;
-        }
-
-        .help-block {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--line-color);
-            padding-bottom: 40px;
-            margin-bottom: 40px;
-        }
-
-        .help-block > img {
-            align-self: flex-start;
-            flex-shrink: 0;
-            margin-left: 10px;
-        }
-
-        .help-shortcut {
-            display: flex;
-        }
-
-        .help-shortcut>div:first-child {
-            width: 160px;
-            padding-right: 10px;
-        }
-
-        .help-shortcut>div:last-child {
-            line-height: 1.6em;
-        }
-
-        .help-ul {
-            list-style-type: circle;
-            padding-inline-start: 20px;
-        }
-
-        .help-ul > li {
-            border-bottom: 1px solid #e0e0e0;
-            /*width: 500px;*/
-            padding-right: 10px;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
-
-        .help-ul > li:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        .help-header {
-            display: flex;
-            align-items: center;
-            font-size: 30px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        .help-header > img {
-            margin-right: 10px;
-            height: 30px;
-        }
-        .help-header__version {
-            font-size: 20px;
-        }
-
-
-        /* --- utils ---*/
-        .mt0 {
-            margin-top: 0;
-        }
-
-        .mb0 {
-            margin-bottom: 0;
-        }
-
-
-
-        /* --- mobile --- */
-
-        @media (max-width: 640px) {
-        }
-
-        @media (max-width: 590px) {
-            body {
-                font-size: 15px;
-            }
-        }
-
-        @media (max-width: 750px) {
-            .help-block {
-                display: block;
-            }
-
-            .help-shortcut>div:first-child {
-                width: 110px !important;
-                min-width: 110px !important;
-            }
-
-            .help-block>img {
-                display: block;
-                margin-top: 20px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            body {
-                color: #ccc;
-                background: rgb(33, 33, 33);
-            }
-
-            a:link, a:not([href]), a:visited {
-                color: #64acff;
-            }
-
-            a:link:hover, a:not([href]):hover, a:visited:hover {
-                color: #b2e8ff;
-            }
-
-            .help-ul > li:nth-child(even) {
-                background: rgb(44, 44, 44);
-            }
-
-            .help-ul > li {
-                border-bottom: 1px solid #666;
-            }
-
-            .help-block {
-                border-bottom: 1px solid #777;
-            }
-
-            .dark-invert {
-                filter: invert(1);
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="content-content">
+export const HELP_CONTENT_HTML = `
+<div class="help-content">
     <div class="help-header">
         <img class="dark-invert" src="./app/img/klecks-logo.png" data-allow-click="true" alt="Klecks Logo">
         <div>Help</div>
@@ -462,38 +256,182 @@
         </div>
     </div>
 </div>
+`;
 
-<script>
+export const HELP_CONTENT_CSS = `
+.help-content {
+    color: #000;
+    font-family: Arial, sans-serif;
+    font-size: 17px;
+    line-height: 22px;
+    padding: 20px;
+}
 
-    (function() {
-        "use strict";
+.help-content div, .help-content a, .help-content span, .help-content p {
+    box-sizing: border-box;
+}
 
-        //iframe styling - hiding and showing certain elements
-        if(self !== parent) {
-            let styleEl = document.createElement('style');
-            styleEl.innerHTML = '.hide-in-iframe { display: none !important; }';
-            document.head.appendChild(styleEl);
+.help-content a:link, .help-content a:not([href]) {
+    color: #2a64f8;
+    text-decoration: underline;
+    cursor: pointer;
+}
 
-            //meta tag to prevent zooming on ipad, because of an ipados 13 bug. gets stuck zoomed in.
-            let metaArr = document.head.getElementsByTagName('meta');
-            for(let i = 0; i < metaArr.length; i++) {
-                let meta = metaArr[i];
-                if(meta.getAttribute('name') === 'viewport') {
-                    meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
-                }
-            }
-            document.body.onclick = function(clickEvent) {
-                if(['A', 'LABEL', 'INPUT'].includes(clickEvent.target.tagName) || clickEvent.target.getAttribute('data-allow-click') === "true") {
-                    return true;
-                }
-                clickEvent.preventDefault();
-                return false;
-            };
-        }
+.help-content a:visited {
+    color: #536184;
+    text-decoration: underline;
+}
 
+.help-content a:hover, .help-content a:not([href]):hover {
+    color: #000;
+    text-decoration: underline;
+}
 
-    })();
+.help-content li {
+    margin-left: 0;
+}
 
-</script>
-</body>
-</html>
+.help-content ul {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.help-content .key {
+    background: #eee;
+    padding: 0 4px;
+    border-radius: 3px;
+    box-shadow: 1px 1px #ccc;
+    color: rgb(55, 55, 55);
+    min-width: 13px;
+    display: inline-block;
+    text-align: center;
+    font-size: 0.9em;
+    line-height: 1.6em;
+    font-family: monospace;
+}
+
+.help-content .help-block {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+}
+
+.help-content .help-block > img {
+    align-self: flex-start;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.help-content .help-shortcut {
+    display: flex;
+}
+
+.help-content .help-shortcut>div:first-child {
+    width: 160px;
+    padding-right: 10px;
+}
+
+.help-content .help-shortcut>div:last-child {
+    line-height: 1.6em;
+}
+
+.help-content .help-ul {
+    list-style-type: circle;
+    padding-inline-start: 20px;
+}
+
+.help-content .help-ul > li {
+    border-bottom: 1px solid #e0e0e0;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.help-content .help-ul > li:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.help-content .help-header {
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.help-content .help-header > img {
+    margin-right: 10px;
+    height: 30px;
+}
+
+.help-content .help-header__version {
+    font-size: 20px;
+}
+
+.help-content .mt0 {
+    margin-top: 0;
+}
+
+.help-content .mb0 {
+    margin-bottom: 0;
+}
+
+/* Mobile */
+@media (max-width: 750px) {
+    .help-content .help-block {
+        display: block;
+    }
+
+    .help-content .help-shortcut>div:first-child {
+        width: 110px !important;
+        min-width: 110px !important;
+    }
+
+    .help-content .help-block>img {
+        display: block;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 590px) {
+    .help-content {
+        font-size: 15px;
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .help-content {
+        color: #ccc;
+        background: rgb(33, 33, 33);
+    }
+
+    .help-content a:link, .help-content a:not([href]), .help-content a:visited {
+        color: #64acff;
+    }
+
+    .help-content a:link:hover, .help-content a:not([href]):hover, .help-content a:visited:hover {
+        color: #b2e8ff;
+    }
+
+    .help-content .help-ul > li:nth-child(even) {
+        background: rgb(44, 44, 44);
+    }
+
+    .help-content .help-ul > li {
+        border-bottom: 1px solid #666;
+    }
+
+    .help-content .help-block {
+        border-bottom: 1px solid #777;
+    }
+
+    .help-content .dark-invert {
+        filter: invert(1);
+    }
+}
+`;

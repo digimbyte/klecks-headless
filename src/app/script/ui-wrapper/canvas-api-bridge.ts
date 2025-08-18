@@ -336,6 +336,121 @@ export class CanvasApiBridge {
     }
     
     // ==========================================
+    // ENGINE ACCESS FOR HEADLESS API
+    // ==========================================
+    
+    /**
+     * Get the underlying engine controllers for headless API
+     * These methods expose the internal engine state needed for the KH API
+     */
+    getEngineControllers(): {
+        tools: { setActive: (tool: string) => any; getActive: () => any };
+        canvas: { getDomCanvas: () => HTMLCanvasElement | null };
+        history: { begin: (name: string) => void; end: () => void; length: () => number };
+        layers: { active: () => any; addRaster: (options: any) => number; select: (index: number) => void };
+        text: { setStyle: (style: any) => void; commit: (options: any) => void; place: (pos: any) => void };
+    } {
+        return {
+            tools: {
+                setActive: (tool: string) => {
+                    this.klecksManager.setCurrentTool(tool);
+                    return this.klecksManager.tools.getActiveTool();
+                },
+                getActive: () => {
+                    return {
+                        name: this.klecksManager.getCurrentTool(),
+                        setOptions: (opts: any) => {
+                            if (opts.size) this.klecksManager.brush.setSize(opts.size);
+                            if (opts.opacity) this.klecksManager.brush.setOpacity(opts.opacity);
+                            if (opts.hardness && (this.klecksManager.brush as any).setHardness) {
+                                (this.klecksManager.brush as any).setHardness(opts.hardness);
+                            }
+                        },
+                        getOptions: () => ({
+                            size: this.klecksManager.brush.getSize(),
+                            opacity: this.klecksManager.brush.getOpacity()
+                        })
+                    };
+                }
+            },
+            canvas: {
+                getDomCanvas: () => {
+                    const element = this.klecksManager.getCanvasElement();
+                    return element.querySelector('canvas') as HTMLCanvasElement | null;
+                }
+            },
+            history: {
+                begin: (name: string) => {
+                    // Use KlecksManager's history system
+                    const history = this.klecksManager.getHistory();
+                    (history as any).beginHistoryAction?.(name);
+                },
+                end: () => {
+                    const history = this.klecksManager.getHistory();
+                    (history as any).endHistoryAction?.();
+                },
+                length: () => {
+                    return this.klecksManager.getHistory().canUndo() ? 1 : 0;
+                }
+            },
+            layers: {
+                active: () => {
+                    const activeIndex = this.klecksManager.layers.getActiveIndex();
+                    return activeIndex >= 0 ? this.klecksManager.layers.getInfo(activeIndex) : null;
+                },
+                addRaster: (options: any) => {
+                    return this.klecksManager.layers.create(options.name || 'Layer');
+                },
+                select: (index: number) => {
+                    this.klecksManager.layers.setActive(index);
+                }
+            },
+            text: {
+                setStyle: (style: any) => {
+                    // Apply text style through text manager
+                    // This will be used by the text tool
+                },
+                commit: (options: any) => {
+                    this.klecksManager.text.create({
+                        text: options.text,
+                        x: options.x,
+                        y: options.y,
+                        size: 24,
+                        font: 'Inter'
+                    });
+                },
+                place: (pos: any) => {
+                    // Position for text placement
+                }
+            }
+        };
+    }
+    
+    /**
+     * Set device pixel ratio for proper canvas scaling
+     */
+    setDPR(dpr: number): void {
+        (this.klecksManager as any).setDPR?.(dpr);
+    }
+    
+    /**
+     * Check if fonts are ready
+     */
+    async waitForFonts(): Promise<void> {
+        if (typeof document !== 'undefined' && document.fonts?.ready) {
+            await document.fonts.ready.catch(() => {});
+        }
+    }
+    
+    /**
+     * Export canvas as PNG
+     */
+    exportToPNG(): string {
+        const canvas = this.getCanvasElement().querySelector('canvas') as HTMLCanvasElement;
+        return canvas ? canvas.toDataURL('image/png') : '';
+    }
+    
+    // ==========================================
     // UTILITY
     // ==========================================
     

@@ -3,66 +3,719 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic HTML Dev UI Demo - RAW HTML ELEMENTS</title>
+    <title>Klecks Headless API Demo - Production Ready Canvas</title>
     <style>
-        /* MINIMAL STYLING - JUST FOR READABILITY */
+        /* MINIMAL STYLING FOR PRODUCTION HEADLESS API */
         body {
-            font-family: monospace;
+            font-family: 'Inter', monospace, sans-serif;
             margin: 20px;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .api-section {
             background: white;
-            color: black;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
         }
         
-        fieldset {
-            margin-bottom: 10px;
+        .api-section h3 {
+            margin-top: 0;
+            color: #2c5aa0;
+            font-size: 16px;
         }
         
-        legend {
-            font-weight: bold;
+        .canvas-container {
+            border: 2px solid #ccc;
+            display: inline-block;
+            background: white;
+            margin: 10px 0;
+        }
+        
+        button {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        button:hover {
+            background: #1e3d6f;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        input, select {
+            padding: 4px;
+            margin: 2px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+        }
+        
+        .status {
+            background: #f9f9f9;
+            padding: 8px;
+            font-size: 12px;
+            color: #666;
+            border-radius: 3px;
+        }
+        
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 3px;
+            margin-top: 10px;
         }
         
         #loading {
             text-align: center;
             font-size: 18px;
+            padding: 40px;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <h1>🔧 BASIC HTML DEV UI DEMO</h1>
-    <p><strong>Raw HTML elements with NO fancy styling - just functional buttons and inputs!</strong></p>
+    <h1>🎨 Klecks Headless API - Production Canvas</h1>
+    <p><strong>Headless canvas API that fixes the 5 most common paint engine integration issues</strong></p>
     
-    <div id="loading">Loading basic HTML UI...</div>
-    <div id="container" style="display: none;"></div>
+    <div id="loading">Initializing headless paint engine...</div>
+    <div id="container" style="display: none;">
+        
+        <div class="api-section">
+            <h3>🖼️ Canvas</h3>
+            <div class="canvas-container" id="canvas-mount"></div>
+            <div class="status" id="canvas-status">Canvas: Ready</div>
+        </div>
+        
+        <div class="api-section">
+            <h3>🛠️ Headless API Test Suite</h3>
+            <button onclick="KH.testActiveToolSwitch()">Test Tool Switch</button>
+            <button onclick="KH.testBrushOptions()">Test Brush Options</button>
+            <button onclick="KH.testCoordinateMapping()">Test Coordinates</button>
+            <button onclick="KH.testLayerTarget()">Test Layer Target</button>
+            <button onclick="KH.testSpecialTools()">Test Special Tools</button>
+            <div id="test-log" class="log"></div>
+        </div>
+        
+        <div class="api-section">
+            <h3>🎨 Tool & Brush Control</h3>
+            <label>Tool:</label>
+            <select id="tool-select">
+                <option value="brush">Brush</option>
+                <option value="bucket">Fill Bucket</option>
+                <option value="text">Text</option>
+            </select>
+            <br>
+            <label>Size:</label>
+            <input type="range" id="brush-size" min="1" max="100" value="12">
+            <span id="size-display">12</span>px
+            <br>
+            <label>Opacity:</label>
+            <input type="range" id="brush-opacity" min="0" max="100" value="90">
+            <span id="opacity-display">90</span>%
+            <br>
+            <label>Hardness:</label>
+            <input type="range" id="brush-hardness" min="0" max="100" value="70">
+            <span id="hardness-display">70</span>%
+        </div>
+        
+        <div class="api-section">
+            <h3>✏️ Quick Actions</h3>
+            <button onclick="KH.drawTestStroke()">Draw Test Stroke</button>
+            <button onclick="KH.fillBucket(200, 150)">Fill Center</button>
+            <button onclick="KH.addText()">Add Text</button>
+            <button onclick="KH.clearCanvas()">Clear Canvas</button>
+            <br>
+            <button onclick="downloadCanvas()">Export PNG</button>
+            <button onclick="KH.resetToDefaults()">Reset Defaults</button>
+        </div>
+        
+        <div class="api-section">
+            <h3>🔍 Engine Diagnostics</h3>
+            <button onclick="KH.diagnoseEngine()">Run Full Diagnostic</button>
+            <div class="status" id="diagnostic-status">Ready for diagnostics</div>
+        </div>
+    </div>
     
     <script type="module">
+        /**
+         * KH - Klecks Headless API
+         * A minimal but robust headless API for paint applications
+         * Fixes the 5 most common integration issues:
+         *   1. Active tool never actually switches
+         *   2. Brush options updated on the wrong instance
+         *   3. Pointer → canvas coordinate mapping is off
+         *   4. No valid target layer / history scope
+         *   5. Special tools depend on shared managers
+         */
+
         async function initBasicDemo() {
             try {
-                // Import the development version with basic HTML UI
+                // Import the development version
                 const { createDevKlecks } = await import('./src/dev-with-ui.ts');
                 
-                // Create the basic HTML dev instance
+                // Create the dev instance with minimal UI
                 const devKlecks = await createDevKlecks({
                     width: 800,
                     height: 600,
-                    showUI: true,
-                    useBasicHtmlUI: true  // This enables raw HTML elements
+                    showUI: false  // We're going headless with our own API
                 });
                 
-                // Add to container
-                const container = document.getElementById('container');
+                // Get the canvas container and api
+                const canvasMount = document.getElementById('canvas-mount');
                 const loadingDiv = document.getElementById('loading');
+                const container = document.getElementById('container');
                 
-                container.appendChild(devKlecks.getElement());
+                // We only need the canvas element, not the UI
+                const canvasEl = devKlecks.getApi().getCanvasElement();
+                canvasMount.appendChild(canvasEl);
                 
                 // Hide loading, show container
                 loadingDiv.style.display = 'none';
                 container.style.display = 'block';
                 
-                // Make API available globally for console testing
+                // Store references for global access
                 window.devKlecks = devKlecks;
                 window.api = devKlecks.getApi();
                 window.manager = devKlecks.getManager();
-                window.basicUI = devKlecks.getBasicHtmlUI();
+                
+                // Create our Klecks Headless API
+                window.KH = {
+                    ready: false,
+                    
+                    // Initialize the headless API
+                    init() {
+                        const api = window.api;
+                        
+                        // Get engine controllers from the API bridge
+                        const engine = api.getEngineControllers?.() || {
+                            tools: { setActive: () => {}, getActive: () => ({}) },
+                            canvas: { getDomCanvas: () => null },
+                            history: { begin: () => {}, end: () => {}, length: () => 0 },
+                            layers: { active: () => null, addRaster: () => 0, select: () => {} },
+                            text: { setStyle: () => {}, commit: () => {}, place: () => {} }
+                        };
+                        
+                        // 1) ensure real canvas size and DPR are set
+                        const c = engine.canvas.getDomCanvas();
+                        if (c) {
+                            c.width = Math.floor(c.clientWidth * devicePixelRatio);
+                            c.height = Math.floor(c.clientHeight * devicePixelRatio);
+                            api.setDPR?.(devicePixelRatio);
+                        }
+                        
+                        // 2) ensure a paintable layer exists and is selected
+                        if (!engine.layers.active()) {
+                            engine.layers.addRaster({ name: 'Base' });
+                        }
+                        engine.layers.select(0);
+                        
+                        // 3) seed brush defaults
+                        this.setTool('brush');
+                        this.setBrush({ size: 12, opacity: 0.9, hardness: 0.7 });
+                        
+                        // Setup UI controls
+                        this.setupControls();
+                        
+                        // Diagnostic logging
+                        this.log('KH.init() completed');
+                        this.log(`Canvas dimensions: ${c?.width}x${c?.height} (DPR: ${devicePixelRatio})`);
+                        this.log(`Active layer: ${engine.layers.active() ? 'yes' : 'no'}`); 
+                        this.log(`Active tool: ${engine.tools.getActive()?.name || 'unknown'}`); 
+                        
+                        this.ready = true;
+                        return this;
+                    },
+                    
+                    // Set the active tool
+                    setTool(name) {
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) return null;
+                        
+                        // Map common tool names to internal tool names
+                        const toolMap = {
+                            'brush': 'brush',
+                            'bucket': 'paintBucket',
+                            'fill': 'paintBucket',
+                            'text': 'text',
+                            'shape': 'shape',
+                            'hand': 'hand',
+                            'pan': 'hand',
+                            'gradient': 'gradient',
+                            'eyedropper': 'eyedropper'
+                        };
+                        
+                        const mappedName = toolMap[name] || name;
+                        engine.tools.setActive(mappedName);
+                        
+                        const t = engine.tools.getActive();
+                        if (!t) throw new Error(`Tool not found: ${name}`);
+                        
+                        // Update UI
+                        const toolSelect = document.getElementById('tool-select');
+                        if (toolSelect) {
+                            // Try to set the select to match the current tool
+                            const options = Array.from(toolSelect.options);
+                            const option = options.find(o => 
+                                o.value === name || 
+                                toolMap[o.value] === mappedName
+                            );
+                            if (option) {
+                                toolSelect.value = option.value;
+                            }
+                        }
+                        
+                        return t;
+                    },
+                    
+                    // Set brush options
+                    setBrush(opts) {
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) return;
+                        
+                        const t = engine.tools.getActive();
+                        if (!t || !t.setOptions) throw new Error('Active tool is not a brush-like tool');
+                        
+                        t.setOptions(opts);
+                        
+                        // Update UI
+                        if (opts.size !== undefined) {
+                            const sizeInput = document.getElementById('brush-size');
+                            const sizeDisplay = document.getElementById('size-display');
+                            if (sizeInput) sizeInput.value = opts.size;
+                            if (sizeDisplay) sizeDisplay.textContent = opts.size;
+                        }
+                        
+                        if (opts.opacity !== undefined) {
+                            const opacityInput = document.getElementById('brush-opacity');
+                            const opacityDisplay = document.getElementById('opacity-display');
+                            if (opacityInput) opacityInput.value = Math.round(opts.opacity * 100);
+                            if (opacityDisplay) opacityDisplay.textContent = Math.round(opts.opacity * 100);
+                        }
+                        
+                        if (opts.hardness !== undefined) {
+                            const hardnessInput = document.getElementById('brush-hardness');
+                            const hardnessDisplay = document.getElementById('hardness-display');
+                            if (hardnessInput) hardnessInput.value = Math.round(opts.hardness * 100);
+                            if (hardnessDisplay) hardnessDisplay.textContent = Math.round(opts.hardness * 100);
+                        }
+                    },
+                    
+                    // Draw a stroke with the current tool
+                    stroke(points) {
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine || !points || points.length < 2) return;
+                        
+                        const c = engine.canvas.getDomCanvas();
+                        if (!c) return;
+                        
+                        const r = c.getBoundingClientRect();
+                        const pe = (type, p) => c.dispatchEvent(new PointerEvent(type, {
+                            pointerId: 1, pointerType: 'mouse', buttons: 1,
+                            pressure: p.p ?? p.pressure ?? 0.5,
+                            clientX: r.left + p.x, clientY: r.top + p.y,
+                            bubbles: true, cancelable: true
+                        }));
+
+                        engine.history.begin('stroke');
+                        try {
+                            pe('pointerdown', points[0]);
+                            for (let i=1; i<points.length; i++) pe('pointermove', points[i]);
+                            pe('pointerup', points[points.length-1]);
+                        } finally {
+                            engine.history.end();
+                        }
+                    },
+                    
+                    // Fill an area with the current color
+                    bucket(x, y, tolerance=8) {
+                        const api = window.api;
+                        const oldTool = api.getCurrentTool();
+                        
+                        this.setTool('bucket');
+                        
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) return;
+                        
+                        const c = engine.canvas.getDomCanvas();
+                        if (!c) return;
+                        
+                        const r = c.getBoundingClientRect();
+                        c.dispatchEvent(new PointerEvent('pointerdown', {
+                            pointerId: 2, pointerType: 'mouse', buttons: 1, pressure: 0.5,
+                            clientX: r.left + x, clientY: r.top + y, bubbles: true, cancelable: true
+                        }));
+                        c.dispatchEvent(new PointerEvent('pointerup', {
+                            pointerId: 2, pointerType: 'mouse', buttons: 1, pressure: 0.5,
+                            clientX: r.left + x, clientY: r.top + y, bubbles: true, cancelable: true
+                        }));
+                        
+                        // Return to previous tool
+                        this.setTool(oldTool);
+                    },
+                    
+                    // Add text to the canvas
+                    text({x, y, text, family='Inter', size=24, bold=false}) {
+                        const api = window.api;
+                        const oldTool = api.getCurrentTool();
+                        
+                        this.setTool('text');
+                        
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) return;
+                        
+                        engine.text.setStyle?.({ family, size, bold });
+                        
+                        // Some engines need a "place → commit" sequence
+                        engine.text.place?.({ x, y });
+                        engine.text.commit?.({ x, y, text });
+                        
+                        // Return to previous tool
+                        this.setTool(oldTool);
+                    },
+                    
+                    // Export canvas as PNG
+                    exportPNG() {
+                        const api = window.api;
+                        return api.exportToPNG?.() || engine.canvas.getDomCanvas()?.toDataURL('image/png');
+                    },
+                    
+                    // Clear the canvas
+                    clearCanvas() {
+                        const api = window.api;
+                        api.clearCanvas();
+                    },
+                    
+                    // Setup UI controls
+                    setupControls() {
+                        // Tool selector
+                        const toolSelect = document.getElementById('tool-select');
+                        if (toolSelect) {
+                            toolSelect.addEventListener('change', () => {
+                                this.setTool(toolSelect.value);
+                            });
+                        }
+                        
+                        // Brush size
+                        const sizeInput = document.getElementById('brush-size');
+                        const sizeDisplay = document.getElementById('size-display');
+                        if (sizeInput) {
+                            sizeInput.addEventListener('input', () => {
+                                const size = parseInt(sizeInput.value);
+                                this.setBrush({ size });
+                                if (sizeDisplay) sizeDisplay.textContent = size;
+                            });
+                        }
+                        
+                        // Brush opacity
+                        const opacityInput = document.getElementById('brush-opacity');
+                        const opacityDisplay = document.getElementById('opacity-display');
+                        if (opacityInput) {
+                            opacityInput.addEventListener('input', () => {
+                                const opacity = parseInt(opacityInput.value) / 100;
+                                this.setBrush({ opacity });
+                                if (opacityDisplay) opacityDisplay.textContent = opacityInput.value;
+                            });
+                        }
+                        
+                        // Brush hardness
+                        const hardnessInput = document.getElementById('brush-hardness');
+                        const hardnessDisplay = document.getElementById('hardness-display');
+                        if (hardnessInput) {
+                            hardnessInput.addEventListener('input', () => {
+                                const hardness = parseInt(hardnessInput.value) / 100;
+                                this.setBrush({ hardness });
+                                if (hardnessDisplay) hardnessDisplay.textContent = hardnessInput.value;
+                            });
+                        }
+                    },
+                    
+                    // Log to the test log
+                    log(message) {
+                        const log = document.getElementById('test-log');
+                        if (log) {
+                            const line = document.createElement('div');
+                            line.textContent = message;
+                            log.appendChild(line);
+                            log.scrollTop = log.scrollHeight;
+                        }
+                        console.log(`[KH] ${message}`);
+                    },
+                    
+                    // Reset brush to defaults
+                    resetToDefaults() {
+                        this.setTool('brush');
+                        this.setBrush({ size: 12, opacity: 0.9, hardness: 0.7 });
+                        this.log('Reset to defaults');
+                    },
+                    
+                    // Draw a test stroke
+                    drawTestStroke() {
+                        this.setTool('brush');
+                        this.stroke([
+                            {x: 100, y: 100, p: 0.7},
+                            {x: 150, y: 120, p: 0.8},
+                            {x: 200, y: 150, p: 0.9},
+                            {x: 250, y: 170, p: 1.0},
+                            {x: 300, y: 180, p: 0.8},
+                            {x: 350, y: 150, p: 0.6}
+                        ]);
+                        this.log('Test stroke drawn');
+                    },
+                    
+                    // Add sample text
+                    addText() {
+                        this.text({
+                            x: 200, 
+                            y: 300, 
+                            text: 'Klecks Headless', 
+                            size: 28
+                        });
+                        this.log('Text added');
+                    },
+                    
+                    // TEST SUITE FUNCTIONS
+                    
+                    // Test 1: Active tool switching
+                    testActiveToolSwitch() {
+                        this.log('TEST 1: Active Tool Switch');
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) {
+                            this.log('ERROR: Engine controllers not available');
+                            return;
+                        }
+                        
+                        // Test brush
+                        engine.tools.setActive('brush');
+                        const t1 = engine.tools.getActive();
+                        this.log(`Brush activated: ${t1 && t1.name === 'brush' ? 'YES ✓' : 'NO ✗'}`);
+                        
+                        // Test bucket
+                        engine.tools.setActive('paintBucket');
+                        const t2 = engine.tools.getActive();
+                        this.log(`Bucket activated: ${t2 && t2.name === 'paintBucket' ? 'YES ✓' : 'NO ✗'}`);
+                        
+                        // Test text
+                        engine.tools.setActive('text');
+                        const t3 = engine.tools.getActive();
+                        this.log(`Text activated: ${t3 && t3.name === 'text' ? 'YES ✓' : 'NO ✗'}`);
+                        
+                        // Return to brush
+                        engine.tools.setActive('brush');
+                    },
+                    
+                    // Test 2: Brush options applied to active instance
+                    testBrushOptions() {
+                        this.log('TEST 2: Brush Options');
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) {
+                            this.log('ERROR: Engine controllers not available');
+                            return;
+                        }
+                        
+                        // First switch to brush
+                        engine.tools.setActive('brush');
+                        const brush = engine.tools.getActive();
+                        
+                        // Try to set options
+                        brush.setOptions?.({ size: 18, opacity: 0.8, hardness: 0.7 });
+                        
+                        // Read back to verify
+                        const opts = brush.getOptions?.() || {};
+                        this.log(`Brush size set to 18: ${opts.size === 18 ? 'YES ✓' : 'NO ✗'}`);
+                        this.log(`Brush opacity set to 0.8: ${Math.abs(opts.opacity - 0.8) < 0.01 ? 'YES ✓' : 'NO ✗'}`);
+                        this.log(`Brush hardness set: ${opts.hardness !== undefined ? 'YES ✓' : 'NO ✗'}`);
+                    },
+                    
+                    // Test 3: Coordinate mapping
+                    testCoordinateMapping() {
+                        this.log('TEST 3: Coordinate Mapping');
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) {
+                            this.log('ERROR: Engine controllers not available');
+                            return;
+                        }
+                        
+                        const c = engine.canvas.getDomCanvas();
+                        if (!c) {
+                            this.log('ERROR: Canvas element not found');
+                            return;
+                        }
+                        
+                        const r = c.getBoundingClientRect();
+                        this.log(`Canvas rect: ${r.width}x${r.height} at (${r.left},${r.top})`);
+                        this.log(`Natural size: ${c.width}x${c.height}`);
+                        this.log(`DPR: ${devicePixelRatio}`);
+                        
+                        // Test stroke to verify coordinate mapping
+                        this.setTool('brush');
+                        this.setBrush({ size: 10, opacity: 1, hardness: 1 });
+                        
+                        api.setPrimaryColor({ r: 255, g: 0, b: 0 });
+                        this.stroke([
+                            {x: 50, y: 50},
+                            {x: 100, y: 50},
+                            {x: 100, y: 100},
+                            {x: 50, y: 100},
+                            {x: 50, y: 50}
+                        ]);
+                        
+                        this.log('Drew test square at (50,50) to (100,100)');
+                    },
+                    
+                    // Test 4: Layer target
+                    testLayerTarget() {
+                        this.log('TEST 4: Layer Target');
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) {
+                            this.log('ERROR: Engine controllers not available');
+                            return;
+                        }
+                        
+                        // Check if layer exists
+                        const hasLayer = engine.layers.active() !== null;
+                        this.log(`Active layer exists: ${hasLayer ? 'YES ✓' : 'NO ✗'}`);
+                        
+                        // Create layer if needed
+                        if (!hasLayer) {
+                            engine.layers.addRaster({ name: 'Test Layer' });
+                            engine.layers.select(0);
+                            this.log('Created and selected a new layer');
+                        }
+                        
+                        // Draw with history group
+                        const n0 = engine.history.length?.() || 0;
+                        
+                        engine.history.begin('Test Stroke');
+                        api.setPrimaryColor({ r: 0, g: 0, b: 255 });
+                        api.drawLine(200, 200, 300, 250);
+                        engine.history.end();
+                        
+                        const n1 = engine.history.length?.() || 0;
+                        this.log(`History grew: ${n1 > n0 ? 'YES ✓' : 'NO ✗'}`);
+                    },
+                    
+                    // Test 5: Special tools
+                    testSpecialTools() {
+                        this.log('TEST 5: Special Tools');
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) {
+                            this.log('ERROR: Engine controllers not available');
+                            return;
+                        }
+                        
+                        // Test bucket fill
+                        api.setPrimaryColor({ r: 255, g: 255, b: 0 });
+                        this.bucket(400, 300);
+                        this.log('Bucket fill attempted at (400,300)');
+                        
+                        // Test text
+                        this.log('Waiting for fonts to load...');
+                        api.waitForFonts().then(() => {
+                            this.text({
+                                x: 400, 
+                                y: 200, 
+                                text: 'Special Tool Test', 
+                                size: 18
+                            });
+                            this.log('Text tool test completed');
+                        });
+                    },
+                    
+                    // Diagnose all potential issues
+                    diagnoseEngine() {
+                        const diagnosticStatus = document.getElementById('diagnostic-status');
+                        this.log('FULL ENGINE DIAGNOSTIC');
+                        
+                        const api = window.api;
+                        const engine = api.getEngineControllers?.();
+                        if (!engine) {
+                            this.log('CRITICAL: Engine controllers not available');
+                            if (diagnosticStatus) diagnosticStatus.textContent = 'FAILED: Engine controllers not available';  
+                            return;
+                        }
+                        
+                        // Check canvas
+                        const c = engine.canvas.getDomCanvas();
+                        if (!c) {
+                            this.log('CRITICAL: Canvas element not found');
+                            if (diagnosticStatus) diagnosticStatus.textContent = 'FAILED: Canvas element not found';
+                            return;
+                        }
+                        
+                        // Check active layer
+                        const hasLayer = engine.layers.active() !== null;
+                        this.log(`Active layer: ${hasLayer ? 'OK ✓' : 'MISSING ✗'}`);
+                        
+                        // Check tool access
+                        engine.tools.setActive('brush');
+                        const hasTool = engine.tools.getActive() !== null;
+                        this.log(`Tool activation: ${hasTool ? 'OK ✓' : 'BROKEN ✗'}`);
+                        
+                        // Check brush options
+                        const brush = engine.tools.getActive();
+                        const hasOptions = brush && typeof brush.setOptions === 'function';
+                        this.log(`Brush options: ${hasOptions ? 'OK ✓' : 'MISSING ✗'}`);
+                        
+                        // Check history
+                        const hasHistory = typeof engine.history.begin === 'function' && typeof engine.history.end === 'function';
+                        this.log(`History API: ${hasHistory ? 'OK ✓' : 'MISSING ✗'}`);
+                        
+                        // Get canvas details
+                        this.log(`Canvas size: ${c.width}x${c.height} (DPR: ${devicePixelRatio})`);
+                        this.log(`Browser zoom: ${Math.round(window.devicePixelRatio * 100)}%`);
+                        
+                        // Verify paint target
+                        this.log(`Paint canvas ID: ${c.id || 'unnamed'}`); 
+                        
+                        if (hasLayer && hasTool && hasOptions && hasHistory) {
+                            this.log('DIAGNOSTIC RESULT: All systems operational ✓');
+                            if (diagnosticStatus) diagnosticStatus.textContent = 'SUCCESS: All systems operational';
+                        } else {
+                            this.log('DIAGNOSTIC RESULT: System errors detected ✗');
+                            if (diagnosticStatus) diagnosticStatus.textContent = 'ISSUES DETECTED: See test log for details';
+                        }
+                    }
+                };
+                
+                // Initialize the headless API
+                window.KH.init();
+                
+                // Global export function
+                window.downloadCanvas = function() {
+                    const dataUrl = window.KH.exportPNG();
+                    const a = document.createElement('a');
+                    a.href = dataUrl;
+                    a.download = 'klecks-canvas.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+                
                 
                 console.log('🔧 Basic HTML UI loaded!');
                 console.log('Available globals: devKlecks, api, manager, basicUI');

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klecks Development Environment</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 2em;
+            opacity: 0.9;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 2em;
+        }
+        .demo-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .demo-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .demo-card h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .demo-card p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .demo-card .features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .demo-card .features li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .demo-card .features li:last-child {
+            border-bottom: none;
+        }
+        .demo-card .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+        .build-info {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 2em;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .build-info h4 {
+            margin-top: 0;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Klecks</h1>
+        <div class="subtitle">Advanced Drawing Canvas - Development Environment</div>
+        
+        <div class="demo-grid">
+            <a href="src/index.html" class="demo-card">
+                <h3>🚀 Production App</h3>
+                <p>Full Klecks application with complete UI and all features.</p>
+                <ul class="features">
+                    <li>Complete drawing application</li>
+                    <li>Full feature set</li>
+                    <li>Production styling</li>
+                    <li>Multi-language support</li>
+                </ul>
+                <div class="badge">Production Build</div>
+            </a>
+            
+            <a href="src/dev.html" class="demo-card">
+                <h3>🔧 Development Mode</h3>
+                <p>Development version with enhanced debugging and testing tools.</p>
+                <ul class="features">
+                    <li>Debug console</li>
+                    <li>Performance monitoring</li>
+                    <li>Development tools</li>
+                    <li>Hot reload</li>
+                </ul>
+                <div class="badge">Dev Environment</div>
+            </a>
+            
+            <a href="basic.html" class="demo-card">
+                <h3>📋 Raw HTML UI</h3>
+                <p>Minimal interface with raw HTML controls - no styling, pure functionality.</p>
+                <ul class="features">
+                    <li>Raw HTML elements</li>
+                    <li>No CSS styling</li>
+                    <li>Full API access</li>
+                    <li>Perfect for testing</li>
+                </ul>
+                <div class="badge">Developer Testing</div>
+            </a>
+            
+            <a href="comprehensive-ui-demo.html" class="demo-card">
+                <h3>🎛️ Comprehensive UI</h3>
+                <p>Complete development interface exposing all Canvas API features.</p>
+                <ul class="features">
+                    <li>All API features exposed</li>
+                    <li>Advanced tool controls</li>
+                    <li>Comprehensive testing</li>
+                    <li>Full feature coverage</li>
+                </ul>
+                <div class="badge">Full API Demo</div>
+            </a>
+        </div>
+        
+        <div class="build-info">
+            <h4>🔨 Build Information</h4>
+            <p><strong>Status:</strong> Development build completed successfully</p>
+            <p><strong>Entry Point:</strong> Built from src/dev-with-ui.ts</p>
+            <p><strong>Build Output:</strong> dist/dev-with-ui.js (900.59 KB)</p>
+            <p><strong>Features:</strong> Tool Manager, Canvas API Bridge, Basic HTML UI, Comprehensive UI</p>
+            <p><strong>Languages:</strong> 16 language packs included</p>
+            <p><strong>Note:</strong> Demo files require a local web server to run (CORS restrictions)</p>
+        </div>
+        
+        <div style="background: rgba(255, 255, 0, 0.2); padding: 20px; border-radius: 10px; margin-top: 2em; border-left: 4px solid #FFD700;">
+            <h4>🚀 How to Run the Demos</h4>
+            <p><strong>Option 1 - Use Parcel Dev Server (Recommended):</strong></p>
+            <pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0;">npm start        # Production app (src/index.html)
+npm run start:dev # Dev version (src/dev.html)</pre>
+            
+            <p><strong>Option 2 - Simple HTTP Server:</strong></p>
+            <pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0;">python -m http.server 3000
+# or
+npx http-server . -p 3000</pre>
+            <p>Then access: <code>http://localhost:3000</code></p>
+            
+            <p><strong>Option 3 - VS Code Live Server:</strong></p>
+            <p>Install "Live Server" extension and right-click on index.html → "Open with Live Server"</p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2em; opacity: 0.7;">
+            <p>Choose a demo above to start exploring Klecks drawing capabilities</p>
+        </div>
+    </div>
+</body>
+</html>

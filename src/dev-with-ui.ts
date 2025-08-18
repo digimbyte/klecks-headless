@@ -9,13 +9,15 @@ import { KlecksManager } from './app/script/headless/klecks-manager';
 import { CanvasApiBridge } from './app/script/ui-wrapper/canvas-api-bridge';
 import { UIWrapper } from './app/script/ui-wrapper/ui-wrapper-fixed';
 import { ComprehensiveDevUI } from './app/script/ui-wrapper/comprehensive-dev-ui';
+import { BasicHtmlDevUI } from './app/script/ui-wrapper/basic-html-dev-ui';
 import { initLANG } from './app/script/language/language';
 
 interface IDevKlecksOptions {
     width?: number;
     height?: number;
     showUI?: boolean;
-    useComprehensiveUI?: boolean; // NEW: Use the exhaustive dev UI instead of basic UI
+    useComprehensiveUI?: boolean; // Use the exhaustive dev UI instead of basic UI
+    useBasicHtmlUI?: boolean; // NEW: Use raw HTML elements with no styling
     uiOptions?: {
         showToolbar?: boolean;
         showLayerPanel?: boolean;
@@ -32,17 +34,20 @@ class DevKlecks {
     private canvasApiBridge: CanvasApiBridge;
     private uiWrapper: UIWrapper | null = null;
     private comprehensiveUI: ComprehensiveDevUI | null = null;
+    private basicHtmlUI: BasicHtmlDevUI | null = null;
     
     constructor(
         klecksManager: KlecksManager, 
         canvasApiBridge: CanvasApiBridge, 
         uiWrapper?: UIWrapper,
-        comprehensiveUI?: ComprehensiveDevUI
+        comprehensiveUI?: ComprehensiveDevUI,
+        basicHtmlUI?: BasicHtmlDevUI
     ) {
         this.klecksManager = klecksManager;
         this.canvasApiBridge = canvasApiBridge;
         this.uiWrapper = uiWrapper || null;
         this.comprehensiveUI = comprehensiveUI || null;
+        this.basicHtmlUI = basicHtmlUI || null;
     }
     
     /**
@@ -51,6 +56,9 @@ class DevKlecks {
      * If UI is disabled, this is just the canvas
      */
     getElement(): HTMLElement {
+        if (this.basicHtmlUI) {
+            return this.basicHtmlUI.getElement();
+        }
         if (this.comprehensiveUI) {
             return this.comprehensiveUI.getElement();
         }
@@ -86,6 +94,13 @@ class DevKlecks {
     }
     
     /**
+     * Get the basic HTML dev UI (if enabled)
+     */
+    getBasicHtmlUI(): BasicHtmlDevUI | null {
+        return this.basicHtmlUI;
+    }
+    
+    /**
      * Toggle UI visibility (if UI is enabled)
      */
     setUIVisible(visible: boolean): void {
@@ -104,6 +119,9 @@ class DevKlecks {
         }
         if (this.comprehensiveUI) {
             this.comprehensiveUI.destroy();
+        }
+        if (this.basicHtmlUI) {
+            this.basicHtmlUI.destroy();
         }
         this.canvasApiBridge.destroy();
     }
@@ -131,9 +149,13 @@ export async function createDevKlecks(options: IDevKlecksOptions = {}): Promise<
     // Create UI wrapper if requested
     let uiWrapper: UIWrapper | undefined;
     let comprehensiveUI: ComprehensiveDevUI | undefined;
+    let basicHtmlUI: BasicHtmlDevUI | undefined;
     
     if (options.showUI !== false) {
-        if (options.useComprehensiveUI) {
+        if (options.useBasicHtmlUI) {
+            // Use raw HTML elements with no styling - BASIC BITCH HTML
+            basicHtmlUI = new BasicHtmlDevUI(canvasApiBridge);
+        } else if (options.useComprehensiveUI) {
             // Use the comprehensive dev UI with ALL API features exposed
             comprehensiveUI = new ComprehensiveDevUI(canvasApiBridge);
         } else {
@@ -146,7 +168,7 @@ export async function createDevKlecks(options: IDevKlecksOptions = {}): Promise<
         }
     }
     
-    return new DevKlecks(klecksManager, canvasApiBridge, uiWrapper, comprehensiveUI);
+    return new DevKlecks(klecksManager, canvasApiBridge, uiWrapper, comprehensiveUI, basicHtmlUI);
 }
 
 /**

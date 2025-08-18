@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic HTML Dev UI Demo - RAW HTML ELEMENTS</title>
+    <style>
+        /* MINIMAL STYLING - JUST FOR READABILITY */
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background: white;
+            color: black;
+        }
+        
+        fieldset {
+            margin-bottom: 10px;
+        }
+        
+        legend {
+            font-weight: bold;
+        }
+        
+        #loading {
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 BASIC HTML DEV UI DEMO</h1>
+    <p><strong>Raw HTML elements with NO fancy styling - just functional buttons and inputs!</strong></p>
+    
+    <div id="loading">Loading basic HTML UI...</div>
+    <div id="container" style="display: none;"></div>
+    
+    <script type="module">
+        async function initBasicDemo() {
+            try {
+                // Import the development version with basic HTML UI
+                const { createDevKlecks } = await import('./src/dev-with-ui.ts');
+                
+                // Create the basic HTML dev instance
+                const devKlecks = await createDevKlecks({
+                    width: 800,
+                    height: 600,
+                    showUI: true,
+                    useBasicHtmlUI: true  // This enables raw HTML elements
+                });
+                
+                // Add to container
+                const container = document.getElementById('container');
+                const loadingDiv = document.getElementById('loading');
+                
+                container.appendChild(devKlecks.getElement());
+                
+                // Hide loading, show container
+                loadingDiv.style.display = 'none';
+                container.style.display = 'block';
+                
+                // Make API available globally for console testing
+                window.devKlecks = devKlecks;
+                window.api = devKlecks.getApi();
+                window.manager = devKlecks.getManager();
+                window.basicUI = devKlecks.getBasicHtmlUI();
+                
+                console.log('🔧 Basic HTML UI loaded!');
+                console.log('Available globals: devKlecks, api, manager, basicUI');
+                console.log('This is RAW HTML - no fancy styling, just functional elements!');
+                console.log('Example usage:');
+                console.log('  api.setBrushSize(50);');
+                console.log('  api.createLayer("New Layer");');
+                console.log('  api.drawLine(0, 0, 100, 100);');
+                
+                // Demo some features on startup
+                setTimeout(() => {
+                    // Set some basic properties
+                    devKlecks.getApi().setBrushSize(15);
+                    devKlecks.getApi().setPrimaryColor({ r: 200, g: 50, b: 50 });
+                    
+                    console.log('✨ Basic setup complete - raw HTML controls ready!');
+                    console.log('Try clicking the buttons and changing the inputs!');
+                }, 500);
+                
+            } catch (error) {
+                console.error('Failed to initialize basic HTML UI:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: red;">❌ Failed to load</div>
+                    <div style="font-size: 12px; margin-top: 10px;">
+                        ${error.message}
+                    </div>
+                    <div style="font-size: 10px; margin-top: 5px; color: #666;">
+                        Make sure the build has been completed
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize when page loads
+        initBasicDemo();
+        
+        // Add some helpful console functions for testing
+        window.testBasicAPI = {
+            drawBasicPattern: () => {
+                const api = window.api;
+                api.setCurrentTool('brush'); // Main brush tool
+                api.setBrushSize(20);
+                
+                // Draw a simple pattern with basic colors
+                const colors = [
+                    { r: 255, g: 0, b: 0 },   // Red
+                    { r: 0, g: 255, b: 0 },   // Green
+                    { r: 0, g: 0, b: 255 },   // Blue
+                    { r: 255, g: 255, b: 0 }, // Yellow
+                    { r: 255, g: 0, b: 255 }  // Magenta
+                ];
+                
+                colors.forEach((color, i) => {
+                    api.setPrimaryColor(color);
+                    api.drawLine(i * 50 + 50, 100, i * 50 + 50, 200);
+                });
+                
+                console.log('✨ Basic pattern drawn with raw HTML controls!');
+            },
+            
+            testAllBasicFeatures: () => {
+                const api = window.api;
+                console.log('🔧 Testing all basic HTML features...');
+                
+                // Test layer creation
+                api.createLayer('Basic Test Layer');
+                
+                // Test brush settings
+                api.setBrushSize(25);
+                api.setBrushOpacity(0.7);
+                api.setPrimaryColor({ r: 100, g: 150, b: 200 });
+                
+                // Test drawing
+                api.drawLine(10, 10, 200, 100);
+                
+                // Test text
+                api.createText({
+                    text: 'Basic HTML Test',
+                    x: 250,
+                    y: 150,
+                    size: 20,
+                    font: 'monospace'
+                });
+                
+                console.log('🔧 All basic features tested!');
+                console.log('Check the raw HTML controls - no fancy styling, just function!');
+            },
+            
+            stressTestBasic: () => {
+                const api = window.api;
+                console.log('🔥 Basic stress test...');
+                
+                // Draw many simple lines with different colors
+                for (let i = 0; i < 50; i++) {
+                    api.setPrimaryColor({
+                        r: Math.floor(Math.random() * 255),
+                        g: Math.floor(Math.random() * 255),
+                        b: Math.floor(Math.random() * 255)
+                    });
+                    api.drawLine(
+                        Math.random() * 400,
+                        Math.random() * 300,
+                        Math.random() * 400,
+                        Math.random() * 300
+                    );
+                }
+                
+                console.log('🔥 Basic stress test complete - 50 random lines!');
+            }
+        };
+        
+        console.log('💡 Basic helper functions available:');
+        console.log('  testBasicAPI.drawBasicPattern()');
+        console.log('  testBasicAPI.testAllBasicFeatures()');
+        console.log('  testBasicAPI.stressTestBasic()');
+    </script>
+</body>
+</html>

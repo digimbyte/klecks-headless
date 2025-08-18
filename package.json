@@ -9,8 +9,9 @@
     "ios_saf 9"
   ],
   "scripts": {
-    "start": "parcel serve src/index.html --no-cache",
-    "start:dev": "parcel serve src/dev-with-ui.ts --no-cache",
+    "start": "parcel serve index.html --no-cache",
+    "start:dev": "parcel serve src/dev.html --no-cache",
+    "start:basic": "parcel serve basic.html --no-cache",
     "build": "parcel build src/index.html",
     "build:embed": "parcel build src/embed.ts",
     "build:headless": "parcel build src/headless.ts --no-source-maps",

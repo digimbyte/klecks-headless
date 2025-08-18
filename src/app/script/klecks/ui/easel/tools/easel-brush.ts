@@ -170,8 +170,9 @@ export class EaselBrush implements TEaselTool {
     }
 
     onPointerLeave(): void {
+        // Keep the helper visible and do not relocate; retain last known mouse position
         clearTimeout(this.hideCursorTimeout);
-        this.svgEl.setAttribute('opacity', '0');
+        this.svgEl.setAttribute('opacity', '1');
         this.isOver = false;
     }
 
@@ -190,17 +191,12 @@ export class EaselBrush implements TEaselTool {
     setBrush(p: { radius?: number; type?: 'round' | 'pixel-square' }): void {
         if (p.radius !== undefined) {
             this.radius = p.radius;
-            if (!this.isOver) {
-                this.svgEl.setAttribute('opacity', '1');
-                clearTimeout(this.hideCursorTimeout);
-                this.hideCursorTimeout = setTimeout(() => {
-                    this.svgEl.setAttribute('opacity', '0');
-                }, 500);
-            }
-            const { width, height } = this.easel.getSize();
+            // Always keep helper visible and locked to the last known mouse position
+            this.svgEl.setAttribute('opacity', '1');
+            clearTimeout(this.hideCursorTimeout);
             this.currentCursor.update(
                 this.easel.getTransform(),
-                this.isOver ? this.lastPos : { x: width / 2, y: height / 2 },
+                this.lastPos,
                 this.radius,
             );
         }
@@ -222,16 +218,16 @@ export class EaselBrush implements TEaselTool {
     activate(cursorPos?: IVector2D): void {
         this.easel.setCursor('crosshair');
         this.isDragging = false;
+        // Keep helper visible and positioned at the latest known mouse position
+        this.svgEl.setAttribute('opacity', '1');
         if (cursorPos) {
             this.lastPos.x = cursorPos.x;
             this.lastPos.y = cursorPos.y;
-            this.currentCursor.update(
-                this.easel.getTransform(),
-                { x: cursorPos.x, y: cursorPos.y },
-                this.radius,
-            );
-        } else {
-            this.onPointerLeave();
         }
+        this.currentCursor.update(
+            this.easel.getTransform(),
+            this.lastPos,
+            this.radius,
+        );
     }
 }
